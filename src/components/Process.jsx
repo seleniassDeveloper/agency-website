@@ -1,39 +1,21 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useTranslation } from 'react-i18next'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const STEPS = [
-  {
-    num: '01',
-    title: 'Entendemos tu idea',
-    desc: 'Escuchamos tu visión, objetivos y los problemas que buscás resolver para alinearnos al 100%.',
-  },
-  {
-    num: '02',
-    title: 'Definimos estructura',
-    desc: 'Mapeamos qué hace falta y priorizamos las funcionalidades clave para garantizar el éxito.',
-  },
-  {
-    num: '03',
-    title: 'Diseñamos experiencia',
-    desc: 'Creamos interfaces intuitivas (UX/UI) pensadas exclusivamente para la conversión.',
-  },
-  {
-    num: '04',
-    title: 'Desarrollamos',
-    desc: 'Escribimos código rápido y escalable. Transformamos el diseño aprobado en un producto 100% funcional.',
-  },
-  {
-    num: '05',
-    title: 'Lanzamos y mejoramos',
-    desc: 'Ponemos el producto online y lo optimizamos basándonos en datos y feedback de usuarios reales.',
-  },
-]
-
 export default function Process() {
   const sectionRef = useRef(null)
+  const { t } = useTranslation()
+
+  const STEPS = [
+    { num: '01', title: t('process.s1.title'), desc: t('process.s1.desc') },
+    { num: '02', title: t('process.s2.title'), desc: t('process.s2.desc') },
+    { num: '03', title: t('process.s3.title'), desc: t('process.s3.desc') },
+    { num: '04', title: t('process.s4.title'), desc: t('process.s4.desc') },
+    { num: '05', title: t('process.s5.title'), desc: t('process.s5.desc') },
+  ]
 
   useEffect(() => {
     let ctx = gsap.context(() => {
@@ -66,9 +48,9 @@ export default function Process() {
         {/* Left Column - Sticky */}
         <div className="process-left">
           <div className="process-sticky-content">
-            <div className="section-label process-label">Metodología</div>
+            <div className="section-label process-label">{t('process.label')}</div>
             <h2 className="section-title process-title" style={{ fontSize: 'clamp(40px, 6vw, 80px)', lineHeight: 1.1 }}>
-              Nuestro<br/>Proceso
+              {t('process.title1')}<br/>{t('process.title2')}
             </h2>
           </div>
         </div>

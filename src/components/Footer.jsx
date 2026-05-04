@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 const SOCIALS = [
   { label: 'Twitter',   href: '#' },
   { label: 'Dribbble',  href: '#' },
@@ -6,6 +8,8 @@ const SOCIALS = [
 ]
 
 export default function Footer() {
+  const { t } = useTranslation()
+
   return (
     <footer className="footer">
       <div className="footer-logo">Studio✦</div>
@@ -18,7 +22,7 @@ export default function Footer() {
         ))}
       </ul>
 
-      <span className="footer-copy">© 2026 Studio. All rights reserved.</span>
+      <span className="footer-copy">{t('footer.copy')}</span>
     </footer>
   )
 }

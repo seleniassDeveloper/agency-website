@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
+import { useTranslation } from 'react-i18next'
 
 function SplitWord({ word, className = '' }) {
   return (
     <span className={`word ${className}`}>
       {word.split('').map((ch, i) => (
         <span key={i} className="char" style={{ display: 'inline-block' }}>
-          {ch}
+          {ch === ' ' ? '\u00A0' : ch}
         </span>
       ))}
     </span>
@@ -16,6 +17,7 @@ function SplitWord({ word, className = '' }) {
 export default function Hero() {
   const heroRef  = useRef(null)
   const titleRef = useRef(null)
+  const { t } = useTranslation()
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -49,25 +51,22 @@ export default function Hero() {
 
       <div className="container">
         <div className="hero-content" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="hero-eyebrow">Consultoría y Desarrollo Digital</div>
+          <div className="hero-eyebrow">{t('hero.eyebrow')}</div>
 
           <h1 className="hero-title" ref={titleRef} style={{ fontSize: 'clamp(60px, 11vw, 170px)', width: '100%' }}>
             <div className="clip-wrap" style={{ display: 'block' }}>
-              <SplitWord word="PRODUCTOS" />
+              <SplitWord word={t('hero.title1')} />
             </div>
             <div className="clip-wrap" style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: '5%' }}>
-              <SplitWord word="DIGITALES" className="accent" />
+              <SplitWord word={t('hero.title2')} className="accent" />
             </div>
           </h1>
 
           <div className="hero-bottom">
-            <p className="hero-sub" style={{ maxWidth: '550px' }}>
-              <strong>Transformamos ideas en páginas, apps y sistemas listos para crecer.</strong><br/>
-              Desarrollamos soluciones web y mobile para emprendedores y negocios que necesitan lanzar, ordenar o escalar su presencia digital.
-            </p>
+            <p className="hero-sub" style={{ maxWidth: '550px' }} dangerouslySetInnerHTML={{ __html: t('hero.desc') }} />
 
             <a href="#contact" className="hero-cta" data-cursor>
-              <span>Quiero crear mi proyecto</span>
+              <span>{t('hero.cta')}</span>
               <svg viewBox="0 0 24 24" fill="none" strokeWidth="2">
                 <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" />
               </svg>

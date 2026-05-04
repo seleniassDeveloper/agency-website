@@ -1,20 +1,22 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useTranslation } from 'react-i18next'
 
 gsap.registerPlugin(ScrollTrigger)
-
-const STATS = [
-  { num: '100%',  label: 'Soluciones reales' },
-  { num: 'UX+',   label: 'Lógica sólida' },
-  { num: '∞',     label: 'Escalabilidad' },
-  { num: '0',     label: 'Código requerido por vos' },
-]
 
 const LETTERS = ['V', 'A', 'L', 'O', 'R']
 
 export default function About() {
   const ref = useRef(null)
+  const { t } = useTranslation()
+
+  const STATS = [
+    { num: t('about.title1'),  label: t('about.desc1') },
+    { num: t('about.title2'),   label: t('about.desc2') },
+    { num: t('about.title3'),     label: t('about.desc3') },
+    { num: t('about.title4'),     label: t('about.desc4') },
+  ]
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -41,7 +43,7 @@ export default function About() {
       <div className="about-grid">
         <div>
           <div className="about-stacked-title">
-            {LETTERS.map((l, i) => (
+            {t('about.label').split('').map((l, i) => (
               <span key={i} className={`letter${i % 2 !== 0 ? ' accent-letter' : ''}`}
                 style={{ overflow: 'hidden', display: 'block' }}>
                 <span className="about-letter" style={{ display: 'block' }}>{l}</span>
@@ -58,9 +60,7 @@ export default function About() {
           </div>
         </div>
         <div className="glass-panel about-content-panel">
-          <h3 className="about-heading">
-            No necesitás saber programar,<br/> <span className="text-gradient">solo necesitás una idea.</span>
-          </h3>
+          <h3 className="about-heading" dangerouslySetInnerHTML={{ __html: t('about.cardTitle') }} />
           
           <ul className="about-checklist">
             <li>
@@ -69,7 +69,7 @@ export default function About() {
                   <path d="M5 13l4 4L19 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <span>Tenés una idea pero no sabés por dónde empezar.</span>
+              <span>{t('about.li1')}</span>
             </li>
             <li>
               <div className="check-icon">
@@ -77,7 +77,7 @@ export default function About() {
                   <path d="M5 13l4 4L19 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <span>Necesitás digitalizar tu negocio de forma profesional.</span>
+              <span>{t('about.li2')}</span>
             </li>
             <li>
               <div className="check-icon">
@@ -85,17 +85,15 @@ export default function About() {
                   <path d="M5 13l4 4L19 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <span>Querés vender mejor y escalar online.</span>
+              <span>{t('about.li3')}</span>
             </li>
           </ul>
 
           <div className="about-highlight">
-            Nos encargamos de transformar esa necesidad en un sistema que funcione y genere resultados.
+            {t('about.highlight')}
           </div>
 
-          <p className="about-subtext">
-            No construimos solo diseños bonitos, construimos <strong>productos reales</strong>. Nos enfocamos en combinar una excelente experiencia de usuario (UX) con lógica robusta y arquitectura escalable para que tu idea se convierta en una plataforma lista para crecer.
-          </p>
+          <p className="about-subtext" dangerouslySetInnerHTML={{ __html: t('about.footer') }} />
         </div>
       </div>
     </section>

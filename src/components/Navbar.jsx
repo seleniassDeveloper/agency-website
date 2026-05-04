@@ -1,10 +1,18 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
-
-const links = ['Servicios', 'Nosotros', 'Proceso', 'Contacto']
+import { useTranslation } from 'react-i18next'
+import LanguageSwitcher from './LanguageSwitcher'
 
 export default function Navbar() {
   const navRef = useRef(null)
+  const { t } = useTranslation()
+
+  const links = [
+    { key: 'services', label: t('nav.services'), href: '#work' },
+    { key: 'about', label: t('nav.about'), href: '#about' },
+    { key: 'process', label: t('nav.process'), href: '#process' },
+    { key: 'contact', label: t('nav.contact'), href: '#contact' }
+  ]
 
   useEffect(() => {
     gsap.from(navRef.current, {
@@ -22,15 +30,18 @@ export default function Navbar() {
 
       <ul className="navbar-links">
         {links.map(l => (
-          <li key={l}>
-            <a href={`#${l.toLowerCase()}`}>{l}</a>
+          <li key={l.key}>
+            <a href={l.href}>{l.label}</a>
           </li>
         ))}
       </ul>
 
-      <a href="#contacto" className="navbar-cta" data-cursor>
-        Contactar
-      </a>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <LanguageSwitcher />
+        <a href="#contact" className="navbar-cta" data-cursor>
+          {t('nav.cta')}
+        </a>
+      </div>
     </nav>
   )
 }

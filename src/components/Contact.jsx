@@ -1,33 +1,32 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-const TITLE = "¿CÓMO PODEMOS AYUDARTE?"
+import { useTranslation } from 'react-i18next'
 
 export default function Contact() {
   const sectionRef = useRef(null)
-  const [activeType, setActiveType] = useState('Sitio Web')
+  const { t } = useTranslation()
+  
+  // Use the first translated type as default
+  const types = t('contact.form.types', { returnObjects: true })
+  const defaultType = types[0]
+  
+  const [activeType, setActiveType] = useState(defaultType)
   const [selectedNeed, setSelectedNeed] = useState('')
   const [selectedBudget, setSelectedBudget] = useState('')
 
-  const FORM_OPTIONS = {
-    'Sitio Web': {
-      needs: ['Landing Page', 'Sitio Institucional', 'E-commerce', 'Rediseño'],
-      budgets: ['Menos de $1k', '$1k - $3k', 'Más de $3k']
-    },
-    'Web App': {
-      needs: ['MVP desde cero', 'SaaS Completo', 'App Móvil', 'Plataforma a medida'],
-      budgets: ['$3k - $5k', '$5k - $10k', 'Más de $10k']
-    },
-    'Sistema Interno': {
-      needs: ['Dashboard de Métricas', 'Gestión Interna', 'Automatización', 'Integración API'],
-      budgets: ['$2k - $5k', '$5k - $10k', 'Más de $10k']
-    },
-    'Código Existente': {
-      needs: ['Arreglar bugs', 'Agregar features', 'Optimizar rendimiento', 'Migración'],
-      budgets: ['Por Hora', 'Menos de $1k', '$1k - $3k', 'Más de $3k']
-    }
-  }
+  const budgetsData = t('contact.form.budgets', { returnObjects: true })
+  const needsData = t('contact.form.needs', { returnObjects: true })
+
+  // Find the original key for budgets and needs based on the activeType index
+  const activeIndex = types.indexOf(activeType) !== -1 ? types.indexOf(activeType) : 0
+  
+  // The original keys used in the translation JSON
+  const typeKeys = ["Sitio Web", "Web App", "Sistema Interno", "Código Existente"]
+  const activeKey = typeKeys[activeIndex]
+
+  const activeBudgets = budgetsData[activeKey] || []
+  const activeNeeds = needsData[activeKey] || []
 
   useEffect(() => {
     setSelectedNeed('')
@@ -36,23 +35,20 @@ export default function Contact() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.contact-eyebrow', {
-        y: 20, opacity: 0, duration: 0.8, ease: 'power3.out',
-        scrollTrigger: { trigger: '.contact-eyebrow', start: 'top 82%' },
-      })
+      gsap.fromTo('.contact-eyebrow', 
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: '.contact-eyebrow', start: 'top 82%' } }
+      )
 
-      gsap.from('.contact-title .line', {
-        y: '105%',
-        duration: 1.2,
-        ease: 'power4.out',
-        stagger: 0.1,
-        scrollTrigger: { trigger: '.contact-title', start: 'top 80%' },
-      })
+      gsap.fromTo('.contact-title', 
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.2, ease: 'power4.out', scrollTrigger: { trigger: '.contact-title', start: 'top 85%' } }
+      )
 
-      gsap.from('.buzz-form', {
-        y: 40, opacity: 0, duration: 1, ease: 'power3.out',
-        scrollTrigger: { trigger: '.buzz-form', start: 'top 85%' },
-      })
+      gsap.fromTo('.buzz-form', 
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: '.buzz-form', start: 'top 85%' } }
+      )
     }, sectionRef)
 
     return () => ctx.revert()
@@ -62,17 +58,15 @@ export default function Contact() {
     <section className="contact-section" id="contact" ref={sectionRef}>
       <div className="contact-bg" />
 
-      <p className="contact-eyebrow">Tu idea puede convertirse en un producto real.</p>
+      <p className="contact-eyebrow">{t('contact.eyebrow')}</p>
 
-      <h2 className="contact-title" style={{ fontSize: 'clamp(40px, 6vw, 90px)', marginBottom: '60px' }}>
-        <span className="clip-wrap" style={{ display: 'block' }}>
-          <span className="line" style={{ display: 'block' }}>{TITLE}</span>
-        </span>
+      <h2 className="contact-title" style={{ fontSize: 'clamp(40px, 6vw, 90px)', marginBottom: '60px', textShadow: '0 0 40px rgba(0,255,255,0.2)' }}>
+        {t('contact.title')}
       </h2>
 
-      <form className="buzz-form" onSubmit={(e) => { e.preventDefault(); window.location.href = 'mailto:hola@agencia.com'; }}>
+      <form className="buzz-form glass-panel" onSubmit={(e) => { e.preventDefault(); window.location.href = 'mailto:hola@agencia.com'; }}>
         <div className="buzz-pills">
-          {Object.keys(FORM_OPTIONS).map(type => (
+          {types.map(type => (
             <button
               key={type}
               type="button"
@@ -88,9 +82,9 @@ export default function Contact() {
         <div className="buzz-dynamic-fields" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
           
           <div className="contact-options-group">
-            <label className="contact-label">RANGO DE PRESUPUESTO</label>
+            <label className="contact-label">{t('contact.form.budgetLabel')}</label>
             <div className="buzz-pills small">
-              {FORM_OPTIONS[activeType].budgets.map(budget => (
+              {activeBudgets.map(budget => (
                 <button
                   key={budget}
                   type="button"
@@ -105,9 +99,9 @@ export default function Contact() {
           </div>
 
           <div className="contact-options-group">
-            <label className="contact-label">NECESIDADES ESPECÍFICAS</label>
+            <label className="contact-label">{t('contact.form.needsLabel')}</label>
             <div className="buzz-pills small">
-              {FORM_OPTIONS[activeType].needs.map(need => (
+              {activeNeeds.map(need => (
                 <button
                   key={need}
                   type="button"
@@ -122,17 +116,17 @@ export default function Contact() {
           </div>
 
           <div className="buzz-input-group">
-            <input type="text" className="buzz-input" placeholder="TU NOMBRE" required />
+            <input type="text" className="buzz-input" placeholder={t('contact.form.name')} required />
           </div>
           
           <div className="buzz-input-group">
-            <input type="email" className="buzz-input" placeholder="TU EMAIL" required />
+            <input type="email" className="buzz-input" placeholder={t('contact.form.email')} required />
           </div>
           
           <div className="buzz-input-group">
             <textarea 
               className="buzz-input" 
-              placeholder="DETALLES EXTRA (OPCIONAL)..." 
+              placeholder={t('contact.form.details')} 
               rows="1"
             />
           </div>
@@ -140,7 +134,7 @@ export default function Contact() {
 
         <div style={{ marginTop: '40px', display: 'flex', justifyContent: 'flex-end' }}>
           <button type="submit" className="buzz-submit" data-cursor>
-            ENVIAR MENSAJE
+            {t('contact.form.submit')}
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" strokeWidth="2" stroke="currentColor">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>

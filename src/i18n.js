@@ -29,6 +29,7 @@ const resources = {
       },
       about: {
         label: "Value",
+        marquee: " DIGITAL TRANSFORMATION — STRATEGY — ENGINEERING —",
         title1: "100%",
         title2: "UX+",
         desc1: "REAL SOLUTIONS",
@@ -116,6 +117,7 @@ const resources = {
       },
       about: {
         label: "Valor",
+        marquee: " TRANSFORMACIÓN DIGITAL — ESTRATEGIA — INGENIERÍA —",
         title1: "100%",
         title2: "UX+",
         desc1: "SOLUCIONES REALES",

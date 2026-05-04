@@ -56,9 +56,9 @@ export default function About() {
       {/* Dynamic Marquee for VALUE */}
       <div className="about-marquee-container" ref={marqueeRef}>
         <div className="about-marquee-track">
-          {/* We repeat the word many times to create a seamless loop */}
-          {Array(10).fill(t('about.label')).map((word, i) => (
-            <span key={i} className={i % 2 !== 0 ? 'accent-marquee' : ''}>{word}</span>
+          {/* We repeat the sentence a few times to create a seamless loop */}
+          {Array(4).fill(t('about.marquee')).map((sentence, i) => (
+            <span key={i} className={i % 2 !== 0 ? 'accent-marquee' : ''}>{sentence}</span>
           ))}
         </div>
       </div>

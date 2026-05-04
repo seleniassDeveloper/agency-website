@@ -15,6 +15,12 @@ export default function App() {
   const lenisRef = useRef(null)
 
   useEffect(() => {
+    // Force scroll to top on page load so entrance animations are always seen
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual'
+    }
+    window.scrollTo(0, 0)
+
     const lenis = new Lenis({
       duration: 1.4,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

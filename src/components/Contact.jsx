@@ -7,6 +7,32 @@ const TITLE = "¿CÓMO PODEMOS AYUDARTE?"
 export default function Contact() {
   const sectionRef = useRef(null)
   const [activeType, setActiveType] = useState('Sitio Web')
+  const [selectedNeed, setSelectedNeed] = useState('')
+  const [selectedBudget, setSelectedBudget] = useState('')
+
+  const FORM_OPTIONS = {
+    'Sitio Web': {
+      needs: ['Landing Page', 'Sitio Institucional', 'E-commerce', 'Rediseño'],
+      budgets: ['Menos de $1k', '$1k - $3k', 'Más de $3k']
+    },
+    'Web App': {
+      needs: ['MVP desde cero', 'SaaS Completo', 'App Móvil', 'Plataforma a medida'],
+      budgets: ['$3k - $5k', '$5k - $10k', 'Más de $10k']
+    },
+    'Sistema Interno': {
+      needs: ['Dashboard de Métricas', 'Gestión Interna', 'Automatización', 'Integración API'],
+      budgets: ['$2k - $5k', '$5k - $10k', 'Más de $10k']
+    },
+    'Código Existente': {
+      needs: ['Arreglar bugs', 'Agregar features', 'Optimizar rendimiento', 'Migración'],
+      budgets: ['Por Hora', 'Menos de $1k', '$1k - $3k', 'Más de $3k']
+    }
+  }
+
+  useEffect(() => {
+    setSelectedNeed('')
+    setSelectedBudget('')
+  }, [activeType])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -46,7 +72,7 @@ export default function Contact() {
 
       <form className="buzz-form" onSubmit={(e) => { e.preventDefault(); window.location.href = 'mailto:hola@agencia.com'; }}>
         <div className="buzz-pills">
-          {['Sitio Web', 'Web App', 'Sistema Interno'].map(type => (
+          {Object.keys(FORM_OPTIONS).map(type => (
             <button
               key={type}
               type="button"
@@ -59,7 +85,42 @@ export default function Contact() {
           ))}
         </div>
 
-        <div className="buzz-dynamic-fields" style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+        <div className="buzz-dynamic-fields" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+          
+          <div className="contact-options-group">
+            <label className="contact-label">RANGO DE PRESUPUESTO</label>
+            <div className="buzz-pills small">
+              {FORM_OPTIONS[activeType].budgets.map(budget => (
+                <button
+                  key={budget}
+                  type="button"
+                  className={`buzz-pill small ${selectedBudget === budget ? 'active' : ''}`}
+                  onClick={() => setSelectedBudget(budget)}
+                >
+                  <span className="buzz-pill-dot" />
+                  {budget}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="contact-options-group">
+            <label className="contact-label">NECESIDADES ESPECÍFICAS</label>
+            <div className="buzz-pills small">
+              {FORM_OPTIONS[activeType].needs.map(need => (
+                <button
+                  key={need}
+                  type="button"
+                  className={`buzz-pill small ${selectedNeed === need ? 'active' : ''}`}
+                  onClick={() => setSelectedNeed(need)}
+                >
+                  <span className="buzz-pill-dot" />
+                  {need}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="buzz-input-group">
             <input type="text" className="buzz-input" placeholder="TU NOMBRE" required />
           </div>
@@ -71,13 +132,8 @@ export default function Contact() {
           <div className="buzz-input-group">
             <textarea 
               className="buzz-input" 
-              placeholder={
-                activeType === 'Sitio Web' ? 'CONTAME SOBRE TU NEGOCIO...' :
-                activeType === 'Web App' ? 'CONTAME SOBRE TU IDEA PARA LA APP...' :
-                '¿QUÉ PROCESO QUERÉS OPTIMIZAR?'
-              } 
+              placeholder="DETALLES EXTRA (OPCIONAL)..." 
               rows="1"
-              required 
             />
           </div>
         </div>

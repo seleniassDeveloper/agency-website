@@ -36,96 +36,55 @@ export default function Process() {
   const sectionRef = useRef(null)
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from('.process-label, .process-title', {
-        y: 30, opacity: 0, duration: 0.9, ease: 'power3.out', stagger: 0.1,
-        scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' },
+    let ctx = gsap.context(() => {
+      // Header entrance
+      gsap.from('.process-sticky-content', {
+        y: 40, opacity: 0, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: sectionRef.current, start: 'top 75%' },
       })
-      gsap.from('.process-step', {
-        y: 60, opacity: 0, duration: 0.9, ease: 'power3.out', stagger: 0.12,
-        scrollTrigger: { trigger: '.process-steps', start: 'top 78%' },
+
+      // Setup ScrollTrigger for each step
+      const steps = gsap.utils.toArray('.process-step-v2')
+      
+      steps.forEach((step) => {
+        ScrollTrigger.create({
+          trigger: step,
+          start: 'top 60%',    // When the top of the step hits 60% down the viewport
+          end: 'bottom 40%',   // When the bottom of the step hits 40% down the viewport
+          toggleClass: 'active', // Add active class to highlight it
+        })
       })
+
     }, sectionRef)
 
     return () => ctx.revert()
   }, [])
 
   return (
-    <section
-      ref={sectionRef}
-      id="process"
-      style={{
-        padding: 'var(--section-gap) var(--pad-x)',
-        borderTop: '1px solid var(--bg-line)',
-      }}
-    >
-      <div style={{ marginBottom: 'clamp(40px, 6vw, 80px)', textAlign: 'center' }}>
-        <div className="section-label process-label" style={{ display: 'inline-block' }}>Metodología</div>
-        <h2 className="section-title process-title" style={{ textAlign: 'center' }}>Nuestro Proceso</h2>
-      </div>
-
-      <div
-        className="process-steps"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '24px',
-          maxWidth: '1000px',
-          margin: '0 auto',
-        }}
-      >
-        {STEPS.map((step) => (
-          <div
-            key={step.num}
-            className="process-step glass-panel"
-            style={{ 
-              display: 'flex', 
-              flexDirection: 'row',
-              gap: 'clamp(20px, 5vw, 60px)', 
-              alignItems: 'flex-start',
-              padding: 'clamp(24px, 4vw, 40px)',
-            }}
-          >
-            <div
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(24px, 4vw, 40px)',
-                color: 'var(--cyan)',
-                fontWeight: 800,
-                lineHeight: 1,
-              }}
-            >
-              {step.num}
-            </div>
-
-            <div style={{ flex: 1 }}>
-              <h3
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'clamp(20px, 3vw, 28px)',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '-0.01em',
-                  marginBottom: '12px',
-                  color: 'var(--text)',
-                }}
-              >
-                {step.title}
-              </h3>
-
-              <p
-                style={{
-                  fontSize: '16px',
-                  lineHeight: 1.7,
-                  color: 'var(--text-mid)',
-                  maxWidth: '600px',
-                }}
-              >
-                {step.desc}
-              </p>
-            </div>
+    <section ref={sectionRef} id="process" className="process-section-v2">
+      <div className="process-grid-v2">
+        {/* Left Column - Sticky */}
+        <div className="process-left">
+          <div className="process-sticky-content">
+            <div className="section-label process-label">Metodología</div>
+            <h2 className="section-title process-title" style={{ fontSize: 'clamp(40px, 6vw, 80px)', lineHeight: 1.1 }}>
+              Nuestro<br/>Proceso
+            </h2>
           </div>
-        ))}
+        </div>
+
+        {/* Right Column - Scrolling */}
+        <div className="process-right">
+          {STEPS.map((step) => (
+            <div key={step.num} className="process-step-v2">
+              <div className="step-number">{step.num}</div>
+              <div className="step-content">
+                <h3>{step.title}</h3>
+                <p>{step.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

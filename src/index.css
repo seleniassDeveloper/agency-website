@@ -696,6 +696,90 @@ img { max-width: 100%; display: block; }
 .about-right-img:hover { filter: grayscale(0%); }
 
 /* ============================================================
+   PROCESS SECTION V2 (Sticky Reveal)
+   ============================================================ */
+.process-section-v2 {
+  padding: var(--section-gap) var(--pad-x);
+  position: relative;
+  z-index: 1;
+}
+
+.process-grid-v2 {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: clamp(40px, 8vw, 100px);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.process-left {
+  position: relative;
+}
+
+.process-sticky-content {
+  position: sticky;
+  top: clamp(100px, 30vh, 200px);
+}
+
+.process-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-bottom: 30vh;
+}
+
+.process-step-v2 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  opacity: 0.15;
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+  transform: translateX(40px);
+  padding: 80px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.process-step-v2:last-child {
+  border-bottom: none;
+}
+
+.process-step-v2.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.process-step-v2 .step-number {
+  font-family: var(--font-display);
+  font-size: clamp(50px, 6vw, 100px);
+  font-weight: 800;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--text-dim);
+  transition: all 0.5s var(--ease);
+}
+
+.process-step-v2.active .step-number {
+  color: var(--cyan);
+  -webkit-text-stroke: 0px;
+}
+
+.process-step-v2 h3 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.process-step-v2 p {
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--text-mid);
+  max-width: 550px;
+}
+
+/* ============================================================
    CONTACT / CTA
    ============================================================ */
 .contact-section {
@@ -912,6 +996,38 @@ img { max-width: 100%; display: block; }
   border-radius: 50%;
 }
 
+.contact-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.buzz-pills.small {
+  margin-bottom: 0;
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+.buzz-pill.small {
+  padding: 10px 20px;
+  font-size: 11px;
+  gap: 10px;
+}
+
+.buzz-pill.small .buzz-pill-dot {
+  width: 10px;
+  height: 10px;
+}
+
+.buzz-pill.small.active .buzz-pill-dot::after {
+  width: 4px;
+  height: 4px;
+}
+
 .buzz-input-group {
   display: flex;
   align-items: center;
@@ -1013,4 +1129,25 @@ textarea.buzz-input {
 @media (max-width: 600px) {
   .hero-bottom { flex-direction: column; align-items: flex-start; }
   .footer { flex-direction: column; align-items: flex-start; }
+  
+  .process-grid-v2 {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .process-sticky-content {
+    position: relative;
+    top: 0;
+    margin-bottom: 40px;
+  }
+  .process-step-v2 {
+    opacity: 0.4;
+    transform: none;
+    padding: 40px 0;
+  }
+  .process-step-v2.active {
+    opacity: 1;
+  }
+  .process-right {
+    padding-bottom: 0;
+  }
 }

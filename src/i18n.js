@@ -13,12 +13,11 @@ const resources = {
         cta: "Contact Us"
       },
       hero: {
-        eyebrow: "We are not just another agency.",
-        title1: "We Build",
-        title2: "Real",
-        title3: "Products",
-        desc: "Premium design and scalable code to take your business to the next level.",
-        cta: "View Projects"
+        eyebrow: "Digital Consulting & Development",
+        title1: "DIGITAL",
+        title2: "PRODUCTS",
+        desc: "<strong>We transform ideas into websites, apps, and systems ready to grow.</strong><br/>We develop web and mobile solutions for entrepreneurs and businesses that need to launch, organize, or scale their digital presence.",
+        cta: "I want to create my project"
       },
       work: {
         label: "What we build",
@@ -101,12 +100,11 @@ const resources = {
         cta: "Contactar"
       },
       hero: {
-        eyebrow: "No somos una agencia más.",
-        title1: "Construimos",
-        title2: "Productos",
-        title3: "Reales",
-        desc: "Diseño premium y código escalable para llevar tu negocio al siguiente nivel.",
-        cta: "Ver Proyectos"
+        eyebrow: "Consultoría y Desarrollo Digital",
+        title1: "PRODUCTOS",
+        title2: "DIGITALES",
+        desc: "<strong>Transformamos ideas en páginas, apps y sistemas listos para crecer.</strong><br/>Desarrollamos soluciones web y mobile para emprendedores y negocios que necesitan lanzar, ordenar o escalar su presencia digital.",
+        cta: "Quiero crear mi proyecto"
       },
       work: {
         label: "Qué construimos",

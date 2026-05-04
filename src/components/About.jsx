@@ -10,6 +10,7 @@ const LETTERS = ['V', 'A', 'L', 'O', 'R']
 export default function About() {
   const ref = useRef(null)
   const { t } = useTranslation()
+  const marqueeRef = useRef(null)
 
   const STATS = [
     { num: t('about.title1'),  label: t('about.desc1') },
@@ -20,6 +21,18 @@ export default function About() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Marquee animation
+      gsap.to('.about-marquee-track', {
+        xPercent: -50,
+        ease: 'none',
+        duration: 20,
+        repeat: -1,
+      })
+
+      gsap.from('.about-marquee-container', {
+        scrollTrigger: { trigger: ref.current, start: 'top 80%' },
+        y: 100, opacity: 0, duration: 1.5, ease: 'power4.out',
+      })
       gsap.from('.about-letter', {
         scrollTrigger: { trigger: ref.current, start: 'top 75%' },
         y: '100%', opacity: 0,
@@ -39,17 +52,19 @@ export default function About() {
   }, [])
 
   return (
-    <section className="about-section" id="about" ref={ref}>
-      <div className="about-grid">
+    <section className="about-section" id="about" ref={ref} style={{ overflow: 'hidden' }}>
+      {/* Dynamic Marquee for VALUE */}
+      <div className="about-marquee-container" ref={marqueeRef}>
+        <div className="about-marquee-track">
+          {/* We repeat the word many times to create a seamless loop */}
+          {Array(10).fill(t('about.label')).map((word, i) => (
+            <span key={i} className={i % 2 !== 0 ? 'accent-marquee' : ''}>{word}</span>
+          ))}
+        </div>
+      </div>
+
+      <div className="about-grid" style={{ marginTop: '40px' }}>
         <div>
-          <div className="about-stacked-title">
-            {t('about.label').split('').map((l, i) => (
-              <span key={i} className={`letter${i % 2 !== 0 ? ' accent-letter' : ''}`}
-                style={{ overflow: 'hidden', display: 'block' }}>
-                <span className="about-letter" style={{ display: 'block' }}>{l}</span>
-              </span>
-            ))}
-          </div>
           <div className="about-stats">
             {STATS.map(s => (
               <div key={s.label}>

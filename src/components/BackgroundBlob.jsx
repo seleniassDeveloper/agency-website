@@ -1,288 +1,267 @@
 import { useRef, useEffect, useMemo } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
-import { MeshDistortMaterial, Sphere, Environment } from "@react-three/drei"
-import * as THREE from "three"
+import { MeshDistortMaterial, Sphere, Environment, Float } from "@react-three/drei"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 
 gsap.registerPlugin(ScrollTrigger)
 
-// THE MAIN LIQUID BLOB
 function Blob() {
-  const meshRef = useRef()
+  const groupRef = useRef()
   const materialRef = useRef()
+  const nodesRef = useRef([])
+
+  const basePositions = useMemo(
+    () => [
+      [0.85, 0.22, -0.15],
+      [-0.72, -0.35, 0.18],
+      [0.25, 0.72, -0.35],
+      [-0.25, 0.15, -0.65],
+      [0.58, -0.62, 0.12],
+    ],
+    []
+  )
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      if (!meshRef.current || !materialRef.current) return;
+      if (!groupRef.current || !materialRef.current) return
 
-      const proxy = { distort: 0.4, speed: 1.5, spread: 1, envIntensity: 2 }
-      const updateMaterial = (p) => {
-        if (materialRef.current) {
-          materialRef.current.distort = p.distort
-          materialRef.current.speed = p.speed
-          materialRef.current.envMapIntensity = p.envIntensity
-        }
+      const proxy = {
+        distort: 0.28,
+        speed: 1.1,
+        spread: 0.95,
+        envIntensity: 1.6,
       }
 
-      // GSAP Animations
-      // We will move the blob strategically to balance the layout of each section.
-      
-      // Hero (Text is Left -> Blob starts Right)
-      gsap.set(document.body, { backgroundColor: "#050505" })
-      
-      // Entrance Animation (Molecule drops from above)
-      gsap.fromTo(meshRef.current.position, 
-        { x: 1.8, y: 3 }, 
-        { x: 1.8, y: 0, duration: 2, ease: "power4.out", delay: 0.2 }
-      )
-      gsap.fromTo(meshRef.current.scale,
-        { x: 0, y: 0, z: 0 },
-        { x: 1.5, y: 1.5, z: 1.5, duration: 2, ease: "power3.out", delay: 0.2 }
-      )
+      const updateMaterial = () => {
+        if (!materialRef.current) return
 
-      // Transition 1: Hero to Work
-      const tl1 = gsap.timeline({
-        scrollTrigger: {
-          trigger: "#work",
-          start: "top 100%",
-          end: "top 0%",
-          scrub: 1,
+        materialRef.current.distort = proxy.distort
+        materialRef.current.speed = proxy.speed
+        materialRef.current.envMapIntensity = proxy.envIntensity
+      }
+
+      gsap.set(groupRef.current.position, {
+        x: 1.75,
+        y: -0.05,
+        z: 0,
+      })
+
+      gsap.set(groupRef.current.scale, {
+        x: 1.25,
+        y: 1.25,
+        z: 1.25,
+      })
+
+      gsap.fromTo(
+        groupRef.current.position,
+        { x: 2.8, y: 0.25 },
+        {
+          x: 1.75,
+          y: -0.05,
+          duration: 1.8,
+          ease: "power4.out",
         }
+      )
+
+      gsap.fromTo(
+        groupRef.current.scale,
+        { x: 0.4, y: 0.4, z: 0.4 },
+        {
+          x: 1.25,
+          y: 1.25,
+          z: 1.25,
+          duration: 1.8,
+          ease: "power3.out",
+        }
+      )
+
+      groupRef.current.userData.proxy = proxy
+
+      const sections = [
+        {
+          trigger: "#work",
+          bg: "#17062b",
+          x: 0.8,
+          y: -0.1,
+          scale: 1.55,
+          distort: 0.45,
+          spread: 1.2,
+        },
+        {
+          trigger: "#about",
+          bg: "#06191f",
+          x: -1.55,
+          y: -0.05,
+          scale: 1.35,
+          distort: 0.32,
+          spread: 1.45,
+        },
+        {
+          trigger: "#process",
+          bg: "#07070d",
+          x: 1.5,
+          y: -0.25,
+          scale: 1.15,
+          distort: 0.38,
+          spread: 0.95,
+        },
+        {
+          trigger: "#contact",
+          bg: "#140522",
+          x: 0.15,
+          y: -0.45,
+          scale: 1.75,
+          distort: 0.5,
+          spread: 1.25,
+        },
+      ]
+
+      sections.forEach((section) => {
+        if (!document.querySelector(section.trigger)) return
+
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: section.trigger,
+              start: "top 90%",
+              end: "top 20%",
+              scrub: 1,
+            },
+          })
+          .to(document.body, { backgroundColor: section.bg }, 0)
+          .to(
+            groupRef.current.position,
+            {
+              x: section.x,
+              y: section.y,
+              duration: 1,
+              ease: "sine.inOut",
+            },
+            0
+          )
+          .to(
+            groupRef.current.scale,
+            {
+              x: section.scale,
+              y: section.scale,
+              z: section.scale,
+              duration: 1,
+              ease: "sine.inOut",
+            },
+            0
+          )
+          .to(
+            proxy,
+            {
+              distort: section.distort,
+              spread: section.spread,
+              speed: 1.6,
+              envIntensity: 1.8,
+              duration: 1,
+              ease: "sine.inOut",
+              onUpdate: updateMaterial,
+            },
+            0
+          )
       })
-      
-      tl1.to(document.body, { backgroundColor: "#1a0b2e", duration: 1 }, 0)
-         .to(meshRef.current.position, { x: 0, y: -0.5, duration: 1, ease: "sine.inOut" }, 0)
-         .to(meshRef.current.scale, { x: 12, y: 12, z: 12, duration: 1, ease: "sine.in" }, 0)
-         .to(proxy, { distort: 0.8, speed: 4, spread: 1.5, duration: 1, ease: "sine.in", onUpdate: () => updateMaterial(proxy) }, 0)
-         .to(meshRef.current.scale, { x: 2, y: 2, z: 2, duration: 1, ease: "sine.out" }, 1)
-         .to(proxy, { distort: 0.5, speed: 1.5, spread: 1, duration: 1, ease: "sine.out", onUpdate: () => updateMaterial(proxy) }, 1)
-
-      // Transition 2: Work to About
-      const tl2 = gsap.timeline({
-        scrollTrigger: { trigger: "#about", start: "top 100%", end: "top 0%", scrub: 1 }
-      })
-      
-      tl2.to(document.body, { backgroundColor: "#00151a", duration: 1 }, 0)
-         .to(meshRef.current.position, { x: -2.5, y: 0, duration: 1, ease: "sine.inOut" }, 0)
-         .to(meshRef.current.scale, { x: 12, y: 12, z: 12, duration: 1, ease: "sine.in" }, 0)
-         .to(proxy, { distort: 0.8, speed: 4, spread: 3, envIntensity: 0.5, duration: 1, ease: "sine.in", onUpdate: () => updateMaterial(proxy) }, 0)
-         .to(meshRef.current.scale, { x: 1.8, y: 1.8, z: 1.8, duration: 1, ease: "sine.out" }, 1)
-         .to(proxy, { distort: 0.3, speed: 1, spread: 2.5, envIntensity: 0.8, duration: 1, ease: "sine.out", onUpdate: () => updateMaterial(proxy) }, 1)
-
-      // Transition 3: About to Process
-      const tl3 = gsap.timeline({
-        scrollTrigger: { trigger: "#process", start: "top 100%", end: "top 0%", scrub: 1 }
-      })
-      
-      tl3.to(document.body, { backgroundColor: "#000000", duration: 1 }, 0)
-         .to(meshRef.current.position, { x: 2.5, y: -0.5, duration: 1, ease: "sine.inOut" }, 0)
-         .to(meshRef.current.scale, { x: 12, y: 12, z: 12, duration: 1, ease: "sine.in" }, 0)
-         .to(proxy, { distort: 0.8, speed: 4, spread: 1, envIntensity: 0.2, duration: 1, ease: "sine.in", onUpdate: () => updateMaterial(proxy) }, 0)
-         .to(meshRef.current.scale, { x: 1.5, y: 1.5, z: 1.5, duration: 1, ease: "sine.out" }, 1)
-         .to(proxy, { distort: 0.4, speed: 1.5, spread: 0.8, envIntensity: 0.5, duration: 1, ease: "sine.out", onUpdate: () => updateMaterial(proxy) }, 1)
-
-      // Transition 4: Process to Contact
-      const tl4 = gsap.timeline({
-        scrollTrigger: { trigger: "#contact", start: "top 100%", end: "top 0%", scrub: 1 }
-      })
-      
-      tl4.to(document.body, { backgroundColor: "#120524", duration: 1 }, 0)
-         .to(meshRef.current.position, { x: 0, y: -1, duration: 1, ease: "sine.inOut" }, 0)
-         .to(meshRef.current.scale, { x: 12, y: 12, z: 12, duration: 1, ease: "sine.in" }, 0)
-         .to(proxy, { distort: 0.8, speed: 4, spread: 1.5, envIntensity: 2, duration: 1, ease: "sine.in", onUpdate: () => updateMaterial(proxy) }, 0)
-         .to(meshRef.current.scale, { x: 2.5, y: 2.5, z: 2.5, duration: 1, ease: "sine.out" }, 1)
-         .to(proxy, { distort: 0.6, speed: 2, spread: 1.2, envIntensity: 2, duration: 1, ease: "sine.out", onUpdate: () => updateMaterial(proxy) }, 1)
-
-      // Store proxy so useFrame can access it
-      meshRef.current.userData.proxy = proxy
-
     })
-    
+
     return () => ctx.revert()
   }, [])
-
-  const nodesRef = useRef([])
-  const basePositions = useMemo(() => [
-    [0.7, 0.4, 0.2],
-    [-0.6, -0.5, 0.4],
-    [0.2, 0.8, -0.5],
-    [-0.3, 0.1, -0.8],
-    [0.5, -0.7, -0.3]
-  ], [])
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime()
-    if (meshRef.current) {
-      meshRef.current.rotation.y = Math.sin(t / 4) + t / 5
-      meshRef.current.rotation.z = Math.cos(t / 4)
-      meshRef.current.rotation.x = t / 6
 
-      // Update molecule spread
-      const proxy = meshRef.current.userData.proxy
-      if (proxy) {
-        nodesRef.current.forEach((node, i) => {
-          if (node) {
-            node.position.set(
-              basePositions[i][0] * proxy.spread,
-              basePositions[i][1] * proxy.spread,
-              basePositions[i][2] * proxy.spread
-            )
-          }
-        })
-      }
+    if (!groupRef.current) return
+
+    groupRef.current.rotation.y = Math.sin(t * 0.25) * 0.35 + t * 0.08
+    groupRef.current.rotation.x = Math.cos(t * 0.2) * 0.18
+    groupRef.current.rotation.z = Math.sin(t * 0.18) * 0.15
+
+    const proxy = groupRef.current.userData.proxy
+
+    if (proxy) {
+      nodesRef.current.forEach((node, i) => {
+        if (!node) return
+
+        node.position.set(
+          basePositions[i][0] * proxy.spread,
+          basePositions[i][1] * proxy.spread,
+          basePositions[i][2] * proxy.spread
+        )
+      })
     }
   })
 
-  const moleculeMaterial = (
-    <MeshDistortMaterial
-      ref={materialRef}
-      color="#2a0066"
-      distort={0.5}
-      speed={2.5}
-      roughness={0.1}
-      metalness={0.8}
-      clearcoat={1}
-      clearcoatRoughness={0.1}
-      envMapIntensity={2}
-    />
-  )
-
   return (
-    <group ref={meshRef} scale={1.5}>
-      {/* Core */}
-      <Sphere args={[0.8, 64, 64]} position={[0, 0, 0]}>
-        {moleculeMaterial}
-      </Sphere>
-      
-      {/* Attached Atoms/Nodes */}
-      <Sphere ref={el => nodesRef.current[0] = el} args={[0.45, 32, 32]} position={basePositions[0]}>
-        {moleculeMaterial}
-      </Sphere>
-      <Sphere ref={el => nodesRef.current[1] = el} args={[0.55, 32, 32]} position={basePositions[1]}>
-        {moleculeMaterial}
-      </Sphere>
-      <Sphere ref={el => nodesRef.current[2] = el} args={[0.35, 32, 32]} position={basePositions[2]}>
-        {moleculeMaterial}
-      </Sphere>
-      <Sphere ref={el => nodesRef.current[3] = el} args={[0.5, 32, 32]} position={basePositions[3]}>
-        {moleculeMaterial}
-      </Sphere>
-      <Sphere ref={el => nodesRef.current[4] = el} args={[0.3, 32, 32]} position={basePositions[4]}>
-        {moleculeMaterial}
-      </Sphere>
-    </group>
-  )
-}
+    <Float speed={1.4} rotationIntensity={0.25} floatIntensity={0.45}>
+      <group ref={groupRef}>
+        <Sphere args={[0.78, 96, 96]} position={[0, 0, 0]}>
+          <MeshDistortMaterial
+            ref={materialRef}
+            color="#3b0b82"
+            distort={0.28}
+            speed={1.1}
+            roughness={0.08}
+            metalness={0.75}
+            clearcoat={1}
+            clearcoatRoughness={0.08}
+            envMapIntensity={1.6}
+          />
+        </Sphere>
 
-// THE EXPLODING DROPLETS
-function DropletsBurst() {
-  const meshRef = useRef()
-  const COUNT = 100 // Number of droplets
-  
-  const dummy = useMemo(() => new THREE.Object3D(), [])
-  
-  const particles = useMemo(() => {
-    const temp = []
-    for (let i = 0; i < COUNT; i++) {
-      // Spherical distribution
-      const theta = Math.random() * Math.PI * 2
-      const phi = Math.acos(Math.random() * 2 - 1)
-      const x = Math.sin(phi) * Math.cos(theta)
-      const y = Math.sin(phi) * Math.sin(theta)
-      const z = Math.cos(phi)
-      
-      const speed = 2 + Math.random() * 5 // Speed/Distance multiplier
-      const scale = 0.02 + Math.random() * 0.15 // Random droplet sizes
-      
-      temp.push({ x, y, z, speed, scale })
-    }
-    return temp
-  }, [])
-
-  useEffect(() => {
-    // Initial invisible state
-    for (let i = 0; i < COUNT; i++) {
-      dummy.position.set(0, 0, 0)
-      dummy.scale.set(0, 0, 0)
-      dummy.updateMatrix()
-      if (meshRef.current) meshRef.current.setMatrixAt(i, dummy.matrix)
-    }
-    if (meshRef.current) meshRef.current.instanceMatrix.needsUpdate = true
-  }, [dummy])
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      if (!meshRef.current) return;
-      
-      const proxy = { progress: 0 }
-      const sections = ["#work", "#about", "#process", "#contact"]
-      
-      const updateInstancedMesh = () => {
-        const p = proxy.progress
-        // Creates a parabolic curve: 0 -> 1 -> 0 based on progress
-        let burst = p < 0.5 ? p * 2 : (1 - p) * 2
-        // Easing for more explosive feel
-        burst = Math.pow(burst, 0.7)
-        
-        for (let i = 0; i < COUNT; i++) {
-          const dir = particles[i]
-          const dist = burst * dir.speed * 4
-          dummy.position.set(dir.x * dist, dir.y * dist, dir.z * dist)
-          
-          dummy.rotation.x = dist
-          dummy.rotation.y = dist
-          
-          const s = dir.scale * burst
-          dummy.scale.set(s, s, s)
-          dummy.updateMatrix()
-          meshRef.current.setMatrixAt(i, dummy.matrix)
-        }
-        meshRef.current.instanceMatrix.needsUpdate = true
-      }
-
-      sections.forEach(section => {
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: "top 95%",
-            end: "top 5%",
-            scrub: 1,
-          }
-        })
-        tl.to(proxy, { progress: 1, duration: 2, ease: "none", onUpdate: updateInstancedMesh }, 0)
-      })
-
-    })
-    return () => ctx.revert()
-  }, [dummy, particles])
-
-  return (
-    <instancedMesh ref={meshRef} args={[null, null, COUNT]}>
-      <sphereGeometry args={[1, 16, 16]} />
-      <MeshDistortMaterial
-        color="#00ffff"
-        distort={0.4}
-        speed={4}
-        roughness={0.1}
-        metalness={0.8}
-        clearcoat={1}
-        clearcoatRoughness={0.1}
-      />
-    </instancedMesh>
+        {basePositions.map((position, index) => (
+          <Sphere
+            key={index}
+            ref={(el) => (nodesRef.current[index] = el)}
+            args={[
+              index === 1 ? 0.48 : index === 4 ? 0.28 : 0.36,
+              64,
+              64,
+            ]}
+            position={position}
+          >
+            <MeshDistortMaterial
+              color="#2a0066"
+              distort={0.35}
+              speed={1.4}
+              roughness={0.1}
+              metalness={0.8}
+              clearcoat={1}
+              clearcoatRoughness={0.08}
+              envMapIntensity={1.5}
+            />
+          </Sphere>
+        ))}
+      </group>
+    </Float>
   )
 }
 
 export default function BackgroundBlob() {
   return (
     <div className="background-canvas-container">
-      <Canvas camera={{ position: [0, 0, 4] }}>
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} />
-        <directionalLight position={[-10, -10, -5]} intensity={0.5} color="#4b0082" />
+      <Canvas
+        camera={{ position: [0, 0, 4.7], fov: 42 }}
+        dpr={[1, 1.6]}
+        gl={{
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+        }}
+      >
+        <ambientLight intensity={0.45} />
+        <directionalLight position={[4, 4, 5]} intensity={1.4} />
+        <directionalLight
+          position={[-4, -2, 3]}
+          intensity={0.45}
+          color="#8b5cf6"
+        />
+        <pointLight position={[0, 1.8, 2]} intensity={1.2} color="#a855f7" />
+
         <Environment preset="city" />
         <Blob />
-        <DropletsBurst />
       </Canvas>
     </div>
   )

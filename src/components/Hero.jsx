@@ -94,7 +94,7 @@ export default function Hero() {
           <div className="hero-bottom">
             <p className="hero-sub" style={{ maxWidth: '550px' }} dangerouslySetInnerHTML={{ __html: t('hero.desc') }} />
 
-            <a href="#contact" className="hero-cta" data-cursor>
+            <a href="#estimator" className="hero-cta" data-cursor>
               <span>{t('hero.cta')}</span>
               <svg viewBox="0 0 24 24" fill="none" strokeWidth="2">
                 <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" />

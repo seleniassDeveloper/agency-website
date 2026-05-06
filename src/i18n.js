@@ -22,10 +22,10 @@ const resources = {
       work: {
         label: "What we build",
         title: "Digital Solutions",
-        p1: { name: "Landing Pages", desc: "Pages designed to capture attention and convert visitors into customers quickly and effectively.", tags: ["Conversion", "Sales", "Design"], stats: ["Fast", "Development", "High", "Impact"] },
-        p2: { name: "Websites", desc: "Your official internet presence. Professional, fast, and optimized sites to highlight your brand.", tags: ["Corporate", "SEO", "Presence"], stats: ["100%", "Custom", "Optimal", "Performance"] },
-        p3: { name: "Web Apps", desc: "Complete applications with complex logic, databases, and a seamless experience.", tags: ["SaaS", "Platforms", "E-commerce"], stats: ["UX", "Prioritized", "Cloud", "Scalable"] },
-        p4: { name: "Internal Systems", desc: "Custom tools to manage your business, automate processes, and visualize data in real-time.", tags: ["Management", "Data", "Automation"], stats: ["Total", "Control", "Improved", "Efficiency"] }
+        p1: { name: "Landing Pages", desc: "Convert visitors into loyal customers with high-performance pages designed for maximum ROI and rapid growth.", tags: ["Conversion Focused", "Fast Launch", "Premium Design"], stats: ["+40%", "Conversion", "24h", "Delivery"] },
+        p2: { name: "Websites", desc: "Elevate your brand with a stunning digital presence that builds trust and dominates your market niche.", tags: ["Corporate Identity", "SEO Optimized", "Ultra Fast"], stats: ["100/100", "Lighthouse", "10x", "More Speed"] },
+        p3: { name: "Web Apps", desc: "Transform your logic into a scalable SaaS. Powerful platforms designed to engage users and streamline complex workflows.", tags: ["SaaS Scaling", "Cloud Native", "Top UX"], stats: ["99.9%", "Uptime", "∞", "Scalability"] },
+        p4: { name: "Internal Systems", desc: "Automate your operations and save thousands of hours. Custom tools that turn your data into competitive advantages.", tags: ["Efficiency First", "Process Automation", "ROI Driven"], stats: ["-60%", "Op. Costs", "+200%", "Productivity"] }
       },
       about: {
         label: "Value",
@@ -88,6 +88,68 @@ const resources = {
       },
       footer: {
         copy: "© 2026 Studio. All rights reserved."
+      },
+      estimator: {
+        label: "Project Builder",
+        title: "DEFINE THE SCOPE OF YOUR VISION",
+        steps: {
+          type: {
+            title: "What type of project is it?",
+            options: {
+              landing: "Landing Page",
+              website: "Corporate Website",
+              webapp: "Web Application / SaaS",
+              custom: "Custom System"
+            }
+          },
+          features: {
+            title: "What features do you need?",
+            options: {
+              auth: "Users & Auth",
+              payments: "Online Payments",
+              cms: "Admin Panel / CMS",
+              motion: "Advanced 3D / Motion",
+              api: "API Integrations"
+            }
+          },
+          timeline: {
+            title: "What is your timeline?",
+            options: {
+              fast: "As soon as possible",
+              standard: "Standard (1-2 months)",
+              relaxed: "No rush (3+ months)"
+            }
+          },
+          contact: {
+            title: "Where should we send the estimate?",
+            placeholderName: "Your Name",
+            placeholderEmail: "Your Email",
+            submit: "Get Estimate"
+          },
+          modality: {
+            title: "How do you prefer to work?",
+            options: {
+              hourly: "By Hour",
+              project: "Fixed Project"
+            },
+            hourlyFields: {
+              label: "Approximate hours per week",
+              placeholder: "e.g. 20"
+            },
+            projectFields: {
+              label: "Estimated duration",
+              placeholder: "e.g. 2 months"
+            }
+          }
+        },
+        result: {
+          title: "Estimate & Consultation",
+          complexity: "Complexity Level",
+          time: "Estimated Time",
+          modality: "Billing Modality",
+          cta: "Send Project Details",
+          disclaimer: "We'll review your estimate and contact you shortly to refine the details."
+        }
       }
     }
   },
@@ -110,10 +172,10 @@ const resources = {
       work: {
         label: "Qué construimos",
         title: "Soluciones Digitales",
-        p1: { name: "Landing Pages", desc: "Páginas diseñadas para captar atención y convertir visitantes en clientes de forma rápida y efectiva.", tags: ["Conversión", "Ventas", "Diseño"], stats: ["Rápido", "Desarrollo", "Alto", "Impacto"] },
-        p2: { name: "Sitios Web", desc: "Tu presencia oficial en internet. Sitios institucionales profesionales, rápidos y optimizados para destacar tu marca.", tags: ["Institucional", "SEO", "Presencia"], stats: ["100%", "Personalizado", "Óptimo", "Rendimiento"] },
-        p3: { name: "Web Apps", desc: "Aplicaciones completas y plataformas de venta con lógica compleja, bases de datos y experiencia fluida.", tags: ["SaaS", "Plataformas", "E-commerce"], stats: ["UX", "Priorizado", "Cloud", "Escalable"] },
-        p4: { name: "Sistemas Internos", desc: "Herramientas a medida para gestionar tu negocio, automatizar procesos y visualizar datos en tiempo real.", tags: ["Gestión", "Datos", "Automatización"], stats: ["Control", "Total", "Eficiencia", "Mejorada"] }
+        p1: { name: "Landing Pages", desc: "Convierte visitantes en clientes leales con páginas de alto rendimiento diseñadas para el máximo ROI y crecimiento rápido.", tags: ["Foco en Conversión", "Lanzamiento Rápido", "Diseño Premium"], stats: ["+40%", "Conversión", "24h", "Entrega"] },
+        p2: { name: "Sitios Web", desc: "Eleva tu marca con una presencia digital impactante que genera confianza y domina tu nicho de mercado.", tags: ["Identidad Corporativa", "Optimizado para SEO", "Ultra Rápido"], stats: ["100/100", "Lighthouse", "10x", "Más Velocidad"] },
+        p3: { name: "Web Apps", desc: "Transforma tu lógica en un SaaS escalable. Plataformas potentes diseñadas para fidelizar usuarios y optimizar flujos complejos.", tags: ["Escalabilidad SaaS", "Cloud Native", "UX Superior"], stats: ["99.9%", "Uptime", "∞", "Escalabilidad"] },
+        p4: { name: "Sistemas Internos", desc: "Automatiza tus operaciones y ahorra miles de horas. Herramientas a medida que convierten tus datos en ventajas competitivas.", tags: ["Eficiencia Primero", "Automatización", "Basado en ROI"], stats: ["-60%", "Costos Op.", "+200%", "Productividad"] }
       },
       about: {
         label: "Valor",
@@ -176,6 +238,68 @@ const resources = {
       },
       footer: {
         copy: "© 2026 Studio. Todos los derechos reservados."
+      },
+      estimator: {
+        label: "Planificador de Proyectos",
+        title: "DEFINE EL ALCANCE DE TU VISIÓN",
+        steps: {
+          type: {
+            title: "¿Qué tipo de proyecto es?",
+            options: {
+              landing: "Landing Page",
+              website: "Sitio Institucional",
+              webapp: "Aplicación Web / SaaS",
+              custom: "Sistema a Medida"
+            }
+          },
+          features: {
+            title: "¿Qué funcionalidades necesitás?",
+            options: {
+              auth: "Usuarios y Login",
+              payments: "Pagos Online",
+              cms: "Panel de Admin / CMS",
+              motion: "3D / Motion Avanzado",
+              api: "Integraciones API"
+            }
+          },
+          timeline: {
+            title: "¿Cuál es tu prioridad de tiempo?",
+            options: {
+              fast: "Lo antes posible",
+              standard: "Estándar (1-2 meses)",
+              relaxed: "Sin prisa (3+ meses)"
+            }
+          },
+          contact: {
+            title: "¿A dónde enviamos el presupuesto?",
+            placeholderName: "Tu Nombre",
+            placeholderEmail: "Tu Email",
+            submit: "Obtener Estimación"
+          },
+          modality: {
+            title: "¿Cómo preferís trabajar?",
+            options: {
+              hourly: "Por Hora",
+              project: "Proyecto Cerrado"
+            },
+            hourlyFields: {
+              label: "Horas aproximadas por semana",
+              placeholder: "ej. 20"
+            },
+            projectFields: {
+              label: "Duración estimada",
+              placeholder: "ej. 2 meses"
+            }
+          }
+        },
+        result: {
+          title: "Estimación y Consulta",
+          complexity: "Nivel de Complejidad",
+          time: "Tiempo Estimado",
+          modality: "Modalidad",
+          cta: "Enviar detalles del proyecto",
+          disclaimer: "Revisaremos tu estimación y nos pondremos en contacto pronto para definir los detalles."
+        }
       }
     }
   }

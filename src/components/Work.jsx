@@ -1,106 +1,157 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useTranslation } from 'react-i18next'
-
-gsap.registerPlugin(ScrollTrigger)
 
 export default function Work() {
   const sectionRef = useRef(null)
   const trackRef = useRef(null)
-  const headerRef = useRef(null)
+  const loopRef = useRef(null)
   const { t } = useTranslation()
+  const [activeTab, setActiveTab] = useState(0) // Default to first project
 
   const PROJECTS = [
-    { id: '01', ...t('work.p1', { returnObjects: true }), img: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1400&q=80' },
-    { id: '02', ...t('work.p2', { returnObjects: true }), img: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=900&q=80' },
-    { id: '03', ...t('work.p3', { returnObjects: true }), img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80' },
-    { id: '04', ...t('work.p4', { returnObjects: true }), img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1400&q=80' }
+    { id: '01', ...t('work.p1', { returnObjects: true }), img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800' },
+    { id: '02', ...t('work.p2', { returnObjects: true }), img: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800' },
+    { id: '03', ...t('work.p3', { returnObjects: true }), img: 'https://images.unsplash.com/photo-1551288049-bbbda536339a?auto=format&fit=crop&q=80&w=800' },
+    { id: '04', ...t('work.p4', { returnObjects: true }), img: 'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=800' }
   ]
 
   useEffect(() => {
-    let ctx = gsap.context(() => {
-      // Header animation
-      gsap.from(headerRef.current.querySelectorAll('.section-label, .section-title'), {
-        y: 30, opacity: 0, duration: 0.9, ease: 'power3.out', stagger: 0.1,
-        scrollTrigger: { trigger: headerRef.current, start: 'top 80%' },
-      })
+    const track = trackRef.current
+    if (!track) return
 
-      let mm = gsap.matchMedia();
+    // Positioning the first project immediately
+    const panels = track.querySelectorAll('.work-panel')
+    const firstPanel = panels[0]
+    if (firstPanel && activeTab === 0) {
+      const offset = firstPanel.offsetLeft - (window.innerWidth / 2) + (firstPanel.offsetWidth / 2)
+      const clampedX = -Math.max(0, Math.min(offset, track.scrollWidth - window.innerWidth))
+      gsap.set(track, { x: clampedX })
+    }
 
-      // Desktop: Horizontal Scroll
-      mm.add("(min-width: 901px)", () => {
-        let panels = gsap.utils.toArray('.work-panel')
-        
-        gsap.to(panels, {
-          xPercent: -100 * (panels.length - 1),
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            pin: true,
-            scrub: 1,
-            end: () => "+=" + trackRef.current.scrollWidth
-          }
-        })
-      });
-
-      // Mobile: Vertical Scroll Fade-ins
-      mm.add("(max-width: 900px)", () => {
-        gsap.utils.toArray('.work-panel').forEach(panel => {
-          gsap.from(panel, {
-            y: 50, opacity: 0, duration: 0.8, ease: 'power3.out',
-            scrollTrigger: {
-              trigger: panel,
-              start: 'top 85%'
-            }
-          })
-        });
-      });
-
-    }, sectionRef)
+    // Autoplay loop setup
+    const totalWidth = track.scrollWidth
+    const duration = 40
     
-    return () => ctx.revert()
+    const loop = gsap.to(track, {
+      x: () => -(totalWidth - window.innerWidth),
+      duration: duration,
+      ease: 'none',
+      repeat: -1,
+      yoyo: true,
+      paused: activeTab !== -1 // Start paused if we have an active tab
+    })
+
+    loopRef.current = loop
+
+    const onEnter = () => loop.pause()
+    const onLeave = () => {
+      if (activeTab === -1) loop.play()
+    }
+
+    track.addEventListener('mouseenter', onEnter)
+    track.addEventListener('mouseleave', onLeave)
+
+    return () => {
+      loop.kill()
+      track.removeEventListener('mouseenter', onEnter)
+      track.removeEventListener('mouseleave', onLeave)
+    }
   }, [])
+
+  const goToProject = (index) => {
+    setActiveTab(index)
+    if (loopRef.current) loopRef.current.pause()
+    
+    const track = trackRef.current
+    const panels = track.querySelectorAll('.work-panel')
+    const targetPanel = panels[index]
+    
+    if (!targetPanel) return
+
+    const offset = targetPanel.offsetLeft - (window.innerWidth / 2) + (targetPanel.offsetWidth / 2)
+    const minX = -(track.scrollWidth - window.innerWidth)
+    const clampedX = Math.max(minX, Math.min(0, -offset))
+
+    gsap.to(track, {
+      x: clampedX,
+      duration: 1,
+      ease: 'expo.out' // Faster, sharper positioning
+    })
+  }
+
+  const resumeAutoplay = () => {
+    setActiveTab(-1)
+    if (loopRef.current) loopRef.current.play()
+  }
 
   return (
     <section className="work-section-v2" id="work" ref={sectionRef}>
-      <div className="work-header" ref={headerRef}>
+      <div className="work-header">
         <div className="section-label">{t('work.label')}</div>
         <h2 className="section-title">{t('work.title')}</h2>
+        
+        <div className="work-nav-wrapper">
+          <div className="work-nav-pills">
+            {PROJECTS.map((p, i) => (
+              <button 
+                key={p.id} 
+                className={`work-pill ${activeTab === i ? 'active' : ''}`}
+                onClick={() => goToProject(i)}
+              >
+                {p.name}
+              </button>
+            ))}
+          </div>
+          <button className={`work-resume-btn ${activeTab === -1 ? 'running' : ''}`} onClick={resumeAutoplay}>
+            <span>{activeTab === -1 ? '⏸' : '▶'}</span> 
+            {activeTab === -1 ? 'Autoplay Active' : 'Resume Autoplay'}
+          </button>
+        </div>
       </div>
 
       <div className="work-scroll-container">
         <div className="work-scroll-track" ref={trackRef}>
-          {PROJECTS.map((p) => (
-            <article className="work-panel" key={p.id}>
-              <div className="work-panel-inner">
-                <div className="work-panel-img-wrap">
-                  <img src={p.img} alt={p.name} loading="lazy" className="project-img" />
-                </div>
-                <div className="work-panel-info">
-                  <div className="project-number">{p.id}</div>
-                  <h3 className="project-info-title">{p.name}</h3>
-                  <p className="project-info-desc">{p.desc}</p>
+          {PROJECTS.map((p, i) => (
+            <article key={p.id} className={`work-panel ${activeTab === i ? 'active' : ''}`}>
+              <div className="work-panel-inner glass-panel">
+                <div className="work-panel-content">
+                  <div className="work-panel-num">{p.id}</div>
+                  <h3 className="work-panel-title">{p.name}</h3>
+                  <p className="work-panel-desc">{p.desc}</p>
                   
-                  <div className="project-info-stats">
+                  <div className="work-panel-stats">
+                    {p.stats && p.stats.length >= 2 && (
+                      <div className="work-stat">
+                        <div className="stat-value">{p.stats[0]}</div>
+                        <div className="stat-label">DESARROLLO</div>
+                      </div>
+                    )}
                     {p.stats && p.stats.length >= 4 && (
-                      <>
-                        <div>
-                          <div className="stat-num">{p.stats[0]}</div>
-                          <div className="stat-label">{p.stats[1]}</div>
-                        </div>
-                        <div>
-                          <div className="stat-num">{p.stats[2]}</div>
-                          <div className="stat-label">{p.stats[3]}</div>
-                        </div>
-                      </>
+                      <div className="work-stat">
+                        <div className="stat-value">{p.stats[2]}</div>
+                        <div className="stat-label">IMPACTO</div>
+                      </div>
                     )}
                   </div>
 
-                  <div className="project-tags" style={{ marginTop: 24 }}>
-                    {p.tags.map(t => (
-                      <span key={t} className="project-tag">{t}</span>
+                  <div className="work-panel-tags">
+                    {p.tags.map(tag => (
+                      <span key={tag} className="work-tag">{tag}</span>
                     ))}
+                  </div>
+
+                  <a href="#estimator" className="work-card-cta">
+                    {t('hero.cta')}
+                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="2">
+                      <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" />
+                    </svg>
+                  </a>
+                </div>
+                
+                <div className="work-panel-visual">
+                  <div className="project-img-container">
+                    <img src={p.img} alt={p.name} className="project-img" />
                   </div>
                 </div>
               </div>

@@ -11,7 +11,7 @@ export default function Navbar() {
     { key: 'services', label: t('nav.services'), href: '#work' },
     { key: 'about', label: t('nav.about'), href: '#about' },
     { key: 'process', label: t('nav.process'), href: '#process' },
-    { key: 'contact', label: t('nav.contact'), href: '#contact' }
+    { key: 'contact', label: t('nav.contact'), href: '#estimator' }
   ]
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function Navbar() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <LanguageSwitcher />
-        <a href="#contact" className="navbar-cta" data-cursor>
+        <a href="#estimator" className="navbar-cta" data-cursor>
           {t('nav.cta')}
         </a>
       </div>

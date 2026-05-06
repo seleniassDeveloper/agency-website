@@ -1,15 +1,19 @@
 import { useEffect, useRef } from "react"
 import Lenis from "@studio-freight/lenis"
+import { gsap } from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 
 import Cursor from "./components/Cursor"
 import Navbar from "./components/Navbar"
 import Hero from "./components/Hero"
 import About from "./components/About"
 import Process from "./components/Process"
+import ProjectEstimator from "./components/ProjectEstimator"
 import Work from "./components/Work"
-import Contact from "./components/Contact"
 import Footer from "./components/Footer"
 import BackgroundBlob from "./components/BackgroundBlob"
+
+gsap.registerPlugin(ScrollTrigger)
 
 export default function App() {
   const lenisRef = useRef(null)
@@ -29,14 +33,20 @@ export default function App() {
 
     lenisRef.current = lenis
 
-    function raf(time) {
-      lenis.raf(time)
-      requestAnimationFrame(raf)
+    // Sync ScrollTrigger with Lenis
+    lenis.on('scroll', ScrollTrigger.update)
+
+    const tick = (time) => {
+      lenis.raf(time * 1000)
     }
 
-    requestAnimationFrame(raf)
+    gsap.ticker.add(tick)
+    gsap.ticker.lagSmoothing(0)
 
-    return () => lenis.destroy()
+    return () => {
+      lenis.destroy()
+      gsap.ticker.remove(tick)
+    }
   }, [])
 
   return (
@@ -49,8 +59,8 @@ export default function App() {
         <Hero />
         <About />
         <Process />
-        {/* <Work /> */}
-        <Contact />
+        <ProjectEstimator />
+        <Work />
       </main>
 
       <Footer />

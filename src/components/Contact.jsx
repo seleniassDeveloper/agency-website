@@ -65,56 +65,8 @@ export default function Contact() {
       </h2>
 
       <form className="buzz-form glass-panel" onSubmit={(e) => { e.preventDefault(); window.location.href = 'mailto:hola@agencia.com'; }}>
-        <div className="buzz-pills">
-          {types.map(type => (
-            <button
-              key={type}
-              type="button"
-              className={`buzz-pill ${activeType === type ? 'active' : ''}`}
-              onClick={() => setActiveType(type)}
-            >
-              <span className="buzz-pill-dot" />
-              {type}
-            </button>
-          ))}
-        </div>
-
-        <div className="buzz-dynamic-fields" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+        <div className="buzz-dynamic-fields" style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
           
-          <div className="contact-options-group">
-            <label className="contact-label">{t('contact.form.budgetLabel')}</label>
-            <div className="buzz-pills small">
-              {activeBudgets.map(budget => (
-                <button
-                  key={budget}
-                  type="button"
-                  className={`buzz-pill small ${selectedBudget === budget ? 'active' : ''}`}
-                  onClick={() => setSelectedBudget(budget)}
-                >
-                  <span className="buzz-pill-dot" />
-                  {budget}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="contact-options-group">
-            <label className="contact-label">{t('contact.form.needsLabel')}</label>
-            <div className="buzz-pills small">
-              {activeNeeds.map(need => (
-                <button
-                  key={need}
-                  type="button"
-                  className={`buzz-pill small ${selectedNeed === need ? 'active' : ''}`}
-                  onClick={() => setSelectedNeed(need)}
-                >
-                  <span className="buzz-pill-dot" />
-                  {need}
-                </button>
-              ))}
-            </div>
-          </div>
-
           <div className="buzz-input-group">
             <input type="text" className="buzz-input" placeholder={t('contact.form.name')} required />
           </div>
@@ -127,7 +79,8 @@ export default function Contact() {
             <textarea 
               className="buzz-input" 
               placeholder={t('contact.form.details')} 
-              rows="1"
+              rows="3"
+              style={{ minHeight: '120px' }}
             />
           </div>
         </div>
